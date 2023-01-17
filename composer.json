@@ -1,0 +1,25 @@
+{
+  "name": "pixel-open/prestashop-plausible",
+  "description": "Add Plausible Analytics in Prestashop.",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Pixel",
+      "email": "contact@pixel-developpement.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Pixel\\Module\\Plausible\\": "src/"
+    },
+    "exclude-from-classmap": []
+  },
+  "config": {
+    "preferred-install": "dist",
+    "prepend-autoloader": false
+  },
+  "type": "prestashop-module"
+}

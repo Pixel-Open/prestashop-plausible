@@ -1,0 +1,7 @@
+services:
+  pixel.plausible.controller:
+    class: 'Pixel\Module\Plausible\Controller\Admin\PlausibleController'
+    arguments:
+      - '@pixel.plausible.config'
+  pixel.plausible.config:
+    class: 'Pixel\Module\Plausible\Helper\Config'

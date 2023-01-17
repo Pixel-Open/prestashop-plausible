@@ -1,0 +1,2 @@
+<script defer data-domain="{$smarty.server.HTTP_HOST}" src="https://plausible.io/js/script.js"></script>
+<script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
