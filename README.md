@@ -31,11 +31,11 @@ Move the downloaded file in the Prestashop **modules** directory and unzip the a
 
 From the module manager, find the module and click on configure.
 
-| Field                  | Description                                                                   | Example                                                  | Required |
-|:-----------------------|:------------------------------------------------------------------------------|----------------------------------------------------------|----------|
-| Add JavaScript snippet | Enable stats by including the Plausible snippet in the <head> of your website | Yes                                                      | Y        |
-| Default goals          | Enable default goal events: contact, cart, checkout-step-X, order             | Yes                                                      | Y        |
-| Shared Link            | The shared link allows to display stats in the "Statistics > Plausible" menu  | https://plausible.io/share/website.prestashop?auth=xxxxx | N        |
+| Field                  | Description                                                                  | Example                                                  | Required |
+|:-----------------------|:-----------------------------------------------------------------------------|----------------------------------------------------------|----------|
+| Add JavaScript snippet | Enable stats by including the Plausible snippet in the head of your website  | Yes                                                      | Y        |
+| Default goals          | Enable default goal events: contact, cart, checkout-step-X, order            | Yes                                                      | Y        |
+| Shared Link            | The shared link allows to display stats in the "Statistics > Plausible" menu | https://plausible.io/share/website.prestashop?auth=xxxxx | N        |
 
 Create the **shared link** in your Plausible settings for the site in *Visibility > Shared links > + New link*
 
