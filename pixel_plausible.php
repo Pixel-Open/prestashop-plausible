@@ -73,6 +73,7 @@ class Pixel_plausible extends Module
     public function install(): bool
     {
         return parent::install() &&
+            $this->registerConfigurations() &&
             $this->registerHook('displayHeader') &&
             $this->registerHook('actionFrontControllerSetMedia') &&
             $this->registerHook('displayBeforeBodyClosingTag') &&
@@ -121,12 +122,51 @@ class Pixel_plausible extends Module
      * Add the goal triggers before body end
      *
      * @return string
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
      */
     public function hookDisplayBeforeBodyClosingTag(): string
     {
         if (!$this->isGoalsEnabled()) {
             return '';
         }
+
+        $params = [];
+        $action = 'run';
+        $event = false;
+
+        switch (get_class($this->context->controller)) {
+            case 'CartController':
+                $event = Configuration::get('PLAUSIBLE_GOAL_CART');
+                $params['total'] = $this->context->cart->getCartTotalPrice();
+                break;
+            case 'OrderController':
+                $event = Configuration::get('PLAUSIBLE_GOAL_CHECKOUT');
+                $action = 'checkout';
+                break;
+            case 'OrderConfirmationController':
+                $event = Configuration::get('PLAUSIBLE_GOAL_ORDER');
+                if (Tools::getValue('id_order')) {
+                    $order = new Order((int)Tools::getValue('id_order'));
+                    $params['total'] = (float)$order->getOrdersTotalPaid();
+                }
+                break;
+            case 'ContactController' && count($this->context->controller->success):
+                $event = Configuration::get('PLAUSIBLE_GOAL_CONTACT');
+                break;
+        }
+
+        if (!$event) {
+            return '';
+        }
+
+        $this->context->smarty->assign(
+            [
+                'action' => $action,
+                'event'  => $event,
+                'params' => ['props' => $params],
+            ]
+        );
 
         return $this->fetch('module:pixel_plausible/views/templates/goals.tpl');
     }
@@ -201,9 +241,21 @@ class Pixel_plausible extends Module
                     'Modules.Pixelplausible.Admin'
                 )
             ],
+            'PLAUSIBLE_SHARED_LINK' => [
+                'type'     => 'text',
+                'label'    => $this->trans('Shared Link', [], 'Modules.Pixelplausible.Admin'),
+                'name'     => 'PLAUSIBLE_SHARED_LINK',
+                'size'     => 20,
+                'required' => false,
+                'desc' => $this->trans(
+                    'The shared link allows to display stats in the "Statistics > Plausible" menu.',
+                    [],
+                    'Modules.Pixelplausible.Admin'
+                )
+            ],
             'PLAUSIBLE_GOALS' => [
                 'type'     => 'select',
-                'label'    => $this->trans('Default goals', [], 'Modules.Pixelplausible.Admin'),
+                'label'    => $this->trans('Enable goals', [], 'Modules.Pixelplausible.Admin'),
                 'name'     => 'PLAUSIBLE_GOALS',
                 'required' => false,
                 'options' => [
@@ -221,19 +273,59 @@ class Pixel_plausible extends Module
                     'name' => 'name',
                 ],
                 'desc' => $this->trans(
-                    'Enable default goal events: contact, cart, checkout-step-X, order',
+                    'Enable goal events: contact, cart, checkout-step-X, order',
                     [],
                     'Modules.Pixelplausible.Admin'
                 )
             ],
-            'PLAUSIBLE_SHARED_LINK' => [
+            'PLAUSIBLE_GOAL_CONTACT' => [
                 'type'     => 'text',
-                'label'    => $this->trans('Shared Link', [], 'Modules.Pixelplausible.Admin'),
-                'name'     => 'PLAUSIBLE_SHARED_LINK',
+                'label'    => $this->trans('Contact goal name', [], 'Modules.Pixelplausible.Admin'),
+                'name'     => 'PLAUSIBLE_GOAL_CONTACT',
                 'size'     => 20,
                 'required' => false,
+                'default'  => 'contact',
                 'desc' => $this->trans(
-                    'The shared link allows to display stats in the "Statistics > Plausible" menu.',
+                    'Plausible goal name when customer send a contact message. Leave empty to ignore.',
+                    [],
+                    'Modules.Pixelplausible.Admin'
+                )
+            ],
+            'PLAUSIBLE_GOAL_CART' => [
+                'type'     => 'text',
+                'label'    => $this->trans('Cart goal name', [], 'Modules.Pixelplausible.Admin'),
+                'name'     => 'PLAUSIBLE_GOAL_CART',
+                'size'     => 20,
+                'required' => false,
+                'default'  => 'cart',
+                'desc' => $this->trans(
+                    'Plausible goal name when customer goes to the cart. Leave empty to ignore.',
+                    [],
+                    'Modules.Pixelplausible.Admin'
+                )
+            ],
+            'PLAUSIBLE_GOAL_CHECKOUT' => [
+                'type'     => 'text',
+                'label'    => $this->trans('Checkout goal name', [], 'Modules.Pixelplausible.Admin'),
+                'name'     => 'PLAUSIBLE_GOAL_CHECKOUT',
+                'size'     => 20,
+                'required' => false,
+                'default'  => 'checkout-step',
+                'desc' => $this->trans(
+                    'Plausible goal name prefix when customer goes to a checkout step {goalName}-X. Leave empty to ignore.',
+                    [],
+                    'Modules.Pixelplausible.Admin'
+                )
+            ],
+            'PLAUSIBLE_GOAL_ORDER' => [
+                'type'     => 'text',
+                'label'    => $this->trans('Order goal name', [], 'Modules.Pixelplausible.Admin'),
+                'name'     => 'PLAUSIBLE_GOAL_ORDER',
+                'size'     => 20,
+                'required' => false,
+                'default'  => 'order',
+                'desc' => $this->trans(
+                    'Plausible goal name when customer submits order. Leave empty to ignore.',
                     [],
                     'Modules.Pixelplausible.Admin'
                 )
@@ -340,6 +432,23 @@ class Pixel_plausible extends Module
     {
         foreach ($this->getConfigFields() as $key => $options) {
             Configuration::deleteByName($key);
+        }
+
+        return true;
+    }
+
+    /**
+     * Register events
+     *
+     * @return bool
+     */
+    protected function registerConfigurations(): bool
+    {
+        foreach ($this->getConfigFields() as $key => $options) {
+            if (!isset($options['default'])) {
+                continue;
+            }
+            Configuration::updateValue($key, $options['default']);
         }
 
         return true;

@@ -31,11 +31,15 @@ Move the downloaded file in the Prestashop **modules** directory and unzip the a
 
 From the module manager, find the module and click on configure.
 
-| Field                  | Description                                                                  | Example                                                  | Required |
-|:-----------------------|:-----------------------------------------------------------------------------|----------------------------------------------------------|----------|
-| Add JavaScript snippet | Enable stats by including the Plausible snippet in the head of your website  | Yes                                                      | Y        |
-| Default goals          | Enable default goal events: contact, cart, checkout-step-X, order            | Yes                                                      | Y        |
-| Shared Link            | The shared link allows to display stats in the "Statistics > Plausible" menu | https://plausible.io/share/website.prestashop?auth=xxxxx | N        |
+| Field                  | Description                                                                                           | Example                                                  | Required |
+|:-----------------------|:------------------------------------------------------------------------------------------------------|----------------------------------------------------------|----------|
+| Add JavaScript snippet | Enable stats by including the Plausible snippet in the head of your website                           | Yes                                                      | Y        |
+| Shared Link            | The shared link allows to display stats in the "Statistics > Plausible" menu                          | https://plausible.io/share/website.prestashop?auth=xxxxx | N        |
+| Enable goals           | Enable goal events: contact, cart, checkout-step-X, order                                             | Yes                                                      | Y        |
+| Contact goal name      | Plausible goal name when customer send a contact message. Leave empty to ignore.                      | contact                                                  | N        |
+| Cart goal name         | Plausible goal name when customer goes to the cart. Leave empty to ignore.                            | cart                                                     | N        |
+| Checkout goal name     | Plausible goal name prefix when customer goes to a checkout step {goalName}-X. Leave empty to ignore. | checkout-step                                            | N        |
+| Order goal name        | Plausible goal name when customer submits order. Leave empty to ignore                                | order                                                    | N        |
 
 Create the **shared link** in your Plausible settings for the site in *Visibility > Shared links > + New link*
 
@@ -45,24 +49,18 @@ In the Prestashop admin, the Plausible stats are available in the *Statistics > 
 
 ## Goals
 
-The module includes default goal events when enabled in module configuration.
+The module includes goal events when enabled in module configuration.
 
-- Contact message sent (contact)
-- Cart view (cart)
-- Checkout step X (checkout-step-X)
-- Order complete (order)
+- Contact message sent
+- Cart view
+- Checkout step X
+- Order complete
 
 You need to add goal events in your Plausible website configuration:
 
 ![Plausible Golas](goals.png)
 
-These goals work with the classic Prestashop theme, you can adapt or add custom goals if needed.
-
-### How to remove a default goal?
-
-Override the `pixel_plausible/views/templates/goals.tpl` file and remove the event call you don't need.
-
-You can also disable default goals in the module configuration and implement your own event logic.
+The Plausible event name must be the same as the name in the Prestashop module configuration.
 
 ### How to add a custom goal?
 
