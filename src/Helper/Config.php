@@ -27,6 +27,16 @@ class Config
      *
      * @return string|null
      */
+    public function getInstanceUrl(): ?string
+    {
+        return Configuration::get('PLAUSIBLE_INSTANCE_URL') ?: null;
+    }
+
+    /**
+     * Retrieve key
+     *
+     * @return string|null
+     */
     public function getTheme(): ?string
     {
         return Configuration::get('PLAUSIBLE_THEME') ?: null;

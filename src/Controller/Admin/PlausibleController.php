@@ -38,12 +38,16 @@ class PlausibleController extends FrameworkBundleAdminController
     public function statsAction(Request $request): Response
     {
         $sharedLink = (string)$this->config->getSharedLink();
+        $instanceUrl = (string)$this->config->getInstanceUrl();
+
+        $sharedLinkVerification = $instanceUrl . "/share";
 
         return $this->render(
             '@Modules/pixel_plausible/views/templates/admin/stats.html.twig',
             [
-                'sharedLink' => strpos($sharedLink, 'https://plausible.io/share') === 0 ? $sharedLink : '',
+                'sharedLink' => strpos($sharedLink, $sharedLinkVerification) === 0 ? $sharedLink : '',
                 'theme' => $this->config->getTheme(),
+                'plausible_instance_url' => $instanceUrl,
             ]
         );
     }
