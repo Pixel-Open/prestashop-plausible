@@ -115,6 +115,14 @@ class Pixel_plausible extends Module
             return '';
         }
 
+        $plausible_instance_url = Configuration::get('PLAUSIBLE_INSTANCE_URL');
+
+        $this->context->smarty->assign(
+            [
+                'plausible_instance_url' => $plausible_instance_url,
+            ]
+        );
+
         return $this->fetch('module:pixel_plausible/views/templates/script.tpl');
     }
 
@@ -326,6 +334,19 @@ class Pixel_plausible extends Module
                 'default'  => 'order',
                 'desc' => $this->trans(
                     'Plausible goal name when customer submits order. Leave empty to ignore.',
+                    [],
+                    'Modules.Pixelplausible.Admin'
+                )
+            ],
+            'PLAUSIBLE_INSTANCE_URL' => [
+                'type'     => 'text',
+                'label'    => $this->trans('Plausible Instance URL', [], 'Modules.Pixelplausible.Admin'),
+                'name'     => 'PLAUSIBLE_INSTANCE_URL',
+                'size'     => 20,
+                'required' => true,
+                'default'  => 'https://plausible.io',
+                'desc' => $this->trans(
+                    'If you are using a dedicated instance for plausible. Don\'t change for plausible.io',
                     [],
                     'Modules.Pixelplausible.Admin'
                 )
