@@ -34,6 +34,7 @@ From the module manager, find the module and click on configure.
 | Field                  | Description                                                                                           | Example                                                  | Required |
 |:-----------------------|:------------------------------------------------------------------------------------------------------|----------------------------------------------------------|----------|
 | Add JavaScript snippet | Enable stats by including the Plausible snippet in the head of your website                           | Yes                                                      | Y        |
+| Plausible Instance URL | Your plausible instance URL. Allow to use a custom domain for dedicated instance                      | https://plausible.io                                     | N        |
 | Shared Link            | The shared link allows to display stats in the "Statistics > Plausible" menu                          | https://plausible.io/share/website.prestashop?auth=xxxxx | N        |
 | Enable goals           | Enable goal events: contact, cart, checkout-step-X, order                                             | Yes                                                      | Y        |
 | Contact goal name      | Plausible goal name when customer send a contact message. Leave empty to ignore.                      | contact                                                  | N        |
