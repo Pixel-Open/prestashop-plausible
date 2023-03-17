@@ -10,7 +10,7 @@ const plausibleGoals = {
         current();
 
         const continueButtons = document.getElementsByClassName('continue');
-        for (let i = 0; i <= continueButtons.length; i++) {
+        for (let i = 0; i < continueButtons.length; i++) {
             continueButtons[i].addEventListener('click', function () {
                 current();
             });
@@ -18,7 +18,7 @@ const plausibleGoals = {
 
         function current() {
             const steps = document.getElementsByClassName('checkout-step');
-            for (let i = 0; i <= steps.length; i++) {
+            for (let i = 0; i < steps.length; i++) {
                 if (steps[i].classList.contains('-current')) {
                     plausible(event + '-' + (i + 1), params);
                 }

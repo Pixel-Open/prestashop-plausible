@@ -53,15 +53,27 @@ In the Prestashop admin, the Plausible stats are available in the *Statistics > 
 The module includes goal events when enabled in module configuration.
 
 - Contact message sent
+- Account registration
 - Cart view
 - Checkout step X
 - Order complete
 
 You need to add goal events in your Plausible website configuration:
 
-![Plausible Golas](goals.png)
+![Plausible Goals](goals.png)
 
-The Plausible event name must be the same as the name in the Prestashop module configuration.
+The Plausible goal name must be the same as the name in the Prestashop module configuration.
+
+Default goal names are:
+
+- contact
+- register
+- cart
+- checkout-step-1
+- checkout-step-2
+- checkout-step-3
+- checkout-step-4
+- order
 
 ### How to add a custom goal?
 

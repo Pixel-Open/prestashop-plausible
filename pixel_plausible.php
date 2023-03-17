@@ -14,13 +14,15 @@ use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
 class Pixel_plausible extends Module
 {
+    const PLAUSIBLE_ACCOUNT_CREATED_KEY = '_new_account';
+
     /**
      * Module's constructor.
      */
     public function __construct()
     {
         $this->name = 'pixel_plausible';
-        $this->version = '1.0.1';
+        $this->version = '1.1.0';
         $this->author = 'Pixel Open';
         $this->tab = 'analytics_stats';
         $this->need_instance = 0;
@@ -77,7 +79,8 @@ class Pixel_plausible extends Module
             $this->registerHook('displayHeader') &&
             $this->registerHook('actionFrontControllerSetMedia') &&
             $this->registerHook('displayBeforeBodyClosingTag') &&
-            $this->registerHook('displayBackOfficeHeader');
+            $this->registerHook('displayBackOfficeHeader') &&
+            $this->registerHook('actionCustomerAccountAdd');
     }
 
     /**
@@ -127,6 +130,22 @@ class Pixel_plausible extends Module
     }
 
     /**
+     * Set new account flag in session
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function hookActionCustomerAccountAdd(): void
+    {
+        $allowed = ['AuthController', 'RegistrationController', 'OrderController'];
+
+        if (in_array(get_class($this->context->controller), $allowed)) {
+            $cookie = Context::getContext()->cookie;
+            $cookie->__set(self::PLAUSIBLE_ACCOUNT_CREATED_KEY, 1);
+        }
+    }
+
+    /**
      * Add the goal triggers before body end
      *
      * @return string
@@ -139,47 +158,61 @@ class Pixel_plausible extends Module
             return '';
         }
 
-        $params = [];
-        $action = 'run';
-        $event = false;
+        $cookie = Context::getContext()->cookie;
+
+        $events = [];
 
         switch (get_class($this->context->controller)) {
             case 'CartController':
-                $event = Configuration::get('PLAUSIBLE_GOAL_CART');
-                $params['total'] = $this->context->cart->getCartTotalPrice();
+                $events[] = $this->getEvent('PLAUSIBLE_GOAL_CART', ['total' => $this->context->cart->getCartTotalPrice()]);
                 break;
             case 'OrderController':
-                $event = Configuration::get('PLAUSIBLE_GOAL_CHECKOUT');
-                $action = 'checkout';
-                break;
-            case 'OrderConfirmationController':
-                $event = Configuration::get('PLAUSIBLE_GOAL_ORDER');
-                if (Tools::getValue('id_order')) {
-                    $order = new Order((int)Tools::getValue('id_order'));
-                    $params['total'] = (float)$order->getOrdersTotalPaid();
-                }
+                $events[] = $this->getEvent('PLAUSIBLE_GOAL_CHECKOUT', [], 'checkout');
                 break;
             case 'ContactController' && count($this->context->controller->success):
-                $event = Configuration::get('PLAUSIBLE_GOAL_CONTACT');
+                $events[] = $this->getEvent('PLAUSIBLE_GOAL_CONTACT');
+                break;
+            case 'OrderConfirmationController':
+                $params = [];
+                if (Tools::getValue('id_order')) {
+                    $order = new Order((int)Tools::getValue('id_order'));
+                    $params = ['total' => (float)$order->getOrdersTotalPaid()];
+                }
+                $events[] = $this->getEvent('PLAUSIBLE_GOAL_ORDER', $params);
                 break;
         }
 
-        if (!$event) {
+        if ((int)$cookie->__get(self::PLAUSIBLE_ACCOUNT_CREATED_KEY) === 1) {
+            $events[] = $this->getEvent('PLAUSIBLE_GOAL_REGISTER');
+            $cookie->__unset(self::PLAUSIBLE_ACCOUNT_CREATED_KEY);
+        }
+
+        if (empty($events)) {
             return '';
         }
 
-        $this->context->smarty->assign(
-            [
-                'action' => $action,
-                'event'  => $event,
-                'params' => ['props' => $params],
-            ]
-        );
+        $this->context->smarty->assign(['events' => $events]);
 
         return $this->fetch('module:pixel_plausible/views/templates/goals.tpl');
     }
 
-
+    /**
+     * Build event
+     *
+     * @param string $configName
+     * @param string $action
+     * @param array $params
+     *
+     * @return array
+     */
+    protected function getEvent(string $configName, array $params = [], string $action = 'run'): array
+    {
+        return [
+            'action' => $action,
+            'event'  => Configuration::get($configName),
+            'params' => ['props' => $params],
+        ];
+    }
 
     /**
      * Add JS on frontend
@@ -312,6 +345,19 @@ class Pixel_plausible extends Module
                     'Modules.Pixelplausible.Admin'
                 )
             ],
+            'PLAUSIBLE_GOAL_REGISTER' => [
+                'type'     => 'text',
+                'label'    => $this->trans('Register goal name', [], 'Modules.Pixelplausible.Admin'),
+                'name'     => 'PLAUSIBLE_GOAL_REGISTER',
+                'size'     => 20,
+                'required' => false,
+                'default'  => 'register',
+                'desc' => $this->trans(
+                    'Plausible goal name when creating the customer account. Leave empty to ignore.',
+                    [],
+                    'Modules.Pixelplausible.Admin'
+                )
+            ],
             'PLAUSIBLE_GOAL_CART' => [
                 'type'     => 'text',
                 'label'    => $this->trans('Cart goal name', [], 'Modules.Pixelplausible.Admin'),
@@ -367,7 +413,7 @@ class Pixel_plausible extends Module
             $message = $this->trans(
                 'Create the "shared link" in your Plausible settings for %s: Visibility > Shared links > + New link',
                 [Tools::getHttpHost()],
-                'Modules.Pixelcloudflareturnstile.Admin'
+                'Modules.Pixelplausible.Admin'
             );
 
             $output = '<div class="alert alert-info">' . $message . '</div>';

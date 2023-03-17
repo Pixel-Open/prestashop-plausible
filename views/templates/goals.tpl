@@ -1,7 +1,7 @@
-{if $action and $event }
 <script type="text/javascript">
     window.addEventListener('DOMContentLoaded', function() {
-        plausibleGoals.{$action}('{$event}', {$params|@json_encode nofilter});
+    {foreach from=$events item=event}
+        plausibleGoals.{$event.action}('{$event.event}', {$event.params|@json_encode nofilter});
+    {/foreach}
     });
 </script>
-{/if}
