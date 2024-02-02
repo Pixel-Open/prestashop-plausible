@@ -1,3 +1,7 @@
+## 1.1.1
+
+- Fix service scope on Prestashop 8
+
 ## 1.1.0
 
 - Account registration goal added

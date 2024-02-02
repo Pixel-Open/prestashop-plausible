@@ -3,5 +3,7 @@ services:
     class: 'Pixel\Module\Plausible\Controller\Admin\PlausibleController'
     arguments:
       - '@pixel.plausible.config'
+    public: true
+
   pixel.plausible.config:
     class: 'Pixel\Module\Plausible\Helper\Config'

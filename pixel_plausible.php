@@ -22,7 +22,7 @@ class Pixel_plausible extends Module
     public function __construct()
     {
         $this->name = 'pixel_plausible';
-        $this->version = '1.1.0';
+        $this->version = '1.1.1';
         $this->author = 'Pixel Open';
         $this->tab = 'analytics_stats';
         $this->need_instance = 0;
