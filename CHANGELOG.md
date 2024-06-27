@@ -1,7 +1,8 @@
 ## 1.1.2
 
-- New goals for product and category page view
+- New goal for product and category page view
 - Fix goal request when goal name is empty
+- Revenue tracking added
 
 ## 1.1.1
 

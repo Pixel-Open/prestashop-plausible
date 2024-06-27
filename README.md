@@ -36,7 +36,8 @@ From the module manager, find the module and click on configure.
 | Add JavaScript snippet | Enable stats by including the Plausible snippet in the head of your website                           | Yes                                                      | Y        |
 | Plausible Instance URL | Your plausible instance URL. Allow to use a custom domain for dedicated instance                      | https://plausible.io                                     | N        |
 | Shared Link            | The shared link allows to display stats in the "Statistics > Plausible" menu                          | https://plausible.io/share/website.prestashop?auth=xxxxx | N        |
-| Enable goals           | Enable goal events: contact, cart, checkout-step-X, order                                             | Yes                                                      | Y        |
+| Enable goals           | Enable goal events: contact, cart, checkout-step-X, order, category, product                          | Yes                                                      | Y        |
+| Revenue Tracking       | Enable Revenue Tracking (Plausible business plan only). Revenue is sent with the order goal.          | Yes                                                      | Y        |
 | Contact goal name      | Plausible goal name when customer send a contact message. Leave empty to ignore.                      | contact                                                  | N        |
 | Cart goal name         | Plausible goal name when customer goes to the cart. Leave empty to ignore.                            | cart                                                     | N        |
 | Checkout goal name     | Plausible goal name prefix when customer goes to a checkout step {goalName}-X. Leave empty to ignore. | checkout-step                                            | N        |
@@ -52,6 +53,8 @@ In the Prestashop admin, the Plausible stats are available in the *Statistics > 
 
 The module includes goal events when enabled in module configuration.
 
+- Category page view
+- Product page view
 - Contact message sent
 - Account registration
 - Cart view
@@ -66,6 +69,8 @@ The Plausible goal name must be the same as the name in the Prestashop module co
 
 Default goal names are:
 
+- category
+- product
 - contact
 - register
 - cart
@@ -74,6 +79,14 @@ Default goal names are:
 - checkout-step-3
 - checkout-step-4
 - order
+
+### Revenue Tracking
+
+With the goal "order", the "revenue tracking" can be sent ("Revenue Tracking" option in module configuration). **This feature is only available with Plausible business plan.**
+
+When you add the "order" goal, you need to enable the "Revenue Tracking":
+
+![Plausible Revenue Tracking](revenue.png)
 
 ### How to add a custom goal?
 

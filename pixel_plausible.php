@@ -123,6 +123,7 @@ class Pixel_plausible extends Module
         $this->context->smarty->assign(
             [
                 'plausible_instance_url' => rtrim($plausible_instance_url, '/'),
+                'plausible_script' => Configuration::get('PLAUSIBLE_REVENUE_ENABLED') ? 'script.revenue.js' : 'script.js',
             ]
         );
 
@@ -164,7 +165,12 @@ class Pixel_plausible extends Module
 
         switch (get_class($this->context->controller)) {
             case 'CartController':
-                $events[] = $this->getEvent('PLAUSIBLE_GOAL_CART', ['total' => $this->context->cart->getCartTotalPrice()]);
+                $params = [
+                    'props' => [
+                        'total' => $this->context->cart->getCartTotalPrice()
+                    ]
+                ];
+                $events[] = $this->getEvent('PLAUSIBLE_GOAL_CART', $params);
                 break;
             case 'OrderController':
                 $events[] = $this->getEvent('PLAUSIBLE_GOAL_CHECKOUT', [], 'checkout');
@@ -176,7 +182,20 @@ class Pixel_plausible extends Module
                 $params = [];
                 if (Tools::getValue('id_order')) {
                     $order = new Order((int)Tools::getValue('id_order'));
-                    $params = ['total' => (float)$order->getOrdersTotalPaid()];
+                    $currency = new Currency((int)$order->id_currency);
+                    $params = [
+                        'props' => [
+                            'total' => (float)$order->getOrdersTotalPaid()
+                        ]
+                    ];
+                    if (Configuration::get('PLAUSIBLE_REVENUE_ENABLED')) {
+                        $params = [
+                            'revenue' => [
+                                'amount' => (float)$order->getOrdersTotalPaid(),
+                                'currency' => $currency->iso_code,
+                            ]
+                        ];
+                    }
                 }
                 $events[] = $this->getEvent('PLAUSIBLE_GOAL_ORDER', $params);
                 break;
@@ -216,7 +235,7 @@ class Pixel_plausible extends Module
         return [
             'action' => $action,
             'event'  => Configuration::get($configName),
-            'params' => ['props' => $params],
+            'params' => $params,
         ];
     }
 
@@ -334,6 +353,31 @@ class Pixel_plausible extends Module
                 ],
                 'desc' => $this->trans(
                     'Enable goal events: contact, cart, checkout-step-X, order, product, category',
+                    [],
+                    'Modules.Pixelplausible.Admin'
+                )
+            ],
+            'PLAUSIBLE_REVENUE_ENABLED' => [
+                'type'     => 'select',
+                'label'    => $this->trans('Revenue Tracking', [], 'Modules.Pixelplausible.Admin'),
+                'name'     => 'PLAUSIBLE_REVENUE_ENABLED',
+                'required' => false,
+                'options' => [
+                    'query' => [
+                        [
+                            'value' => '0',
+                            'name'  => $this->trans('No', [], 'Modules.Pixelplausible.Admin'),
+                        ],
+                        [
+                            'value' => '1',
+                            'name'  => $this->trans('Yes', [], 'Modules.Pixelplausible.Admin'),
+                        ],
+                    ],
+                    'id'   => 'value',
+                    'name' => 'name',
+                ],
+                'desc' => $this->trans(
+                    'Enable Revenue Tracking (Plausible business plan only). Revenue is sent with the order goal.',
                     [],
                     'Modules.Pixelplausible.Admin'
                 )
