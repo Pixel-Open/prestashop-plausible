@@ -1,3 +1,8 @@
+## 1.1.2
+
+- New goals for product and category page view
+- Fix goal request when goal name is empty
+
 ## 1.1.1
 
 - Fix service scope on Prestashop 8

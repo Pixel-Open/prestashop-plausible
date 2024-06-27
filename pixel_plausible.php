@@ -180,6 +180,12 @@ class Pixel_plausible extends Module
                 }
                 $events[] = $this->getEvent('PLAUSIBLE_GOAL_ORDER', $params);
                 break;
+            case 'CategoryController':
+                $events[] = $this->getEvent('PLAUSIBLE_GOAL_CATEGORY');
+                break;
+            case 'ProductController':
+                $events[] = $this->getEvent('PLAUSIBLE_GOAL_PRODUCT');
+                break;
         }
 
         if ((int)$cookie->__get(self::PLAUSIBLE_ACCOUNT_CREATED_KEY) === 1) {
@@ -327,7 +333,7 @@ class Pixel_plausible extends Module
                     'name' => 'name',
                 ],
                 'desc' => $this->trans(
-                    'Enable goal events: contact, cart, checkout-step-X, order',
+                    'Enable goal events: contact, cart, checkout-step-X, order, product, category',
                     [],
                     'Modules.Pixelplausible.Admin'
                 )
@@ -393,6 +399,32 @@ class Pixel_plausible extends Module
                 'default'  => 'order',
                 'desc' => $this->trans(
                     'Plausible goal name when customer submits order. Leave empty to ignore.',
+                    [],
+                    'Modules.Pixelplausible.Admin'
+                )
+            ],
+            'PLAUSIBLE_GOAL_CATEGORY' => [
+                'type'     => 'text',
+                'label'    => $this->trans('Category goal name', [], 'Modules.Pixelplausible.Admin'),
+                'name'     => 'PLAUSIBLE_GOAL_CATEGORY',
+                'size'     => 20,
+                'required' => false,
+                'default'  => 'category',
+                'desc' => $this->trans(
+                    'Plausible goal name when customer visits a category. Leave empty to ignore.',
+                    [],
+                    'Modules.Pixelplausible.Admin'
+                )
+            ],
+            'PLAUSIBLE_GOAL_PRODUCT' => [
+                'type'     => 'text',
+                'label'    => $this->trans('Product goal name', [], 'Modules.Pixelplausible.Admin'),
+                'name'     => 'PLAUSIBLE_GOAL_PRODUCT',
+                'size'     => 20,
+                'required' => false,
+                'default'  => 'product',
+                'desc' => $this->trans(
+                    'Plausible goal name when customer visits a product. Leave empty to ignore.',
                     [],
                     'Modules.Pixelplausible.Admin'
                 )
