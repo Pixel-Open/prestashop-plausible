@@ -26,8 +26,6 @@ class PlausibleController extends FrameworkBundleAdminController
     public function __construct(Config $config)
     {
         $this->config = $config;
-
-        parent::__construct();
     }
 
     /**

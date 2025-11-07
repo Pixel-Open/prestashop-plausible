@@ -12,8 +12,8 @@ Add Plausible Analytics in Prestashop.
 
 ## Requirements
 
-- Prestashop >= 1.7.6.0
-- PHP >= 7.2.0
+- Prestashop >= 1.7.6.0 / Prestashop >= 8.0 / Prestashop >= 9.0
+- PHP >= 7.2
 
 ## Installation
 

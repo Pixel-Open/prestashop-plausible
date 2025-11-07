@@ -2,5 +2,5 @@ admin_plausible_stats:
   path: /plausible/stats
   methods: [GET]
   defaults:
-    _controller: 'pixel.plausible.controller:statsAction'
+    _controller: 'pixel.plausible.controller::statsAction'
     _legacy_controller: 'AdminPixelPlausible'
