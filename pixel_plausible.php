@@ -22,7 +22,7 @@ class Pixel_plausible extends Module
     public function __construct()
     {
         $this->name = 'pixel_plausible';
-        $this->version = '1.2.0';
+        $this->version = '1.2.1';
         $this->author = 'Pixel Open';
         $this->tab = 'analytics_stats';
         $this->need_instance = 0;
@@ -540,7 +540,7 @@ class Pixel_plausible extends Module
         $helper->table = $this->table;
         $helper->name_controller = $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
-        $helper->currentIndex = AdminController::$currentIndex . '&' . http_build_query(['configure' => $this->name]);
+        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false) . '&configure=' . $this->name;
         $helper->submit_action = 'submit' . $this->name;
 
         $helper->default_form_language = (int) Configuration::get('PS_LANG_DEFAULT');

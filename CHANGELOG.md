@@ -1,3 +1,11 @@
+## 1.2.1
+
+- Fix module config redirect URL for Nginx compatibility
+
+## 1.2.0
+
+- Prestashop 9 compatibility
+
 ## 1.1.2
 
 - New goal for product and category page view
