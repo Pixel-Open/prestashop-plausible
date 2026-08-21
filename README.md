@@ -36,12 +36,13 @@ From the module manager, find the module and click on configure.
 | Add JavaScript snippet | Enable stats by including the Plausible snippet in the head of your website                           | Yes                                                      | Y        |
 | Plausible Instance URL | Your plausible instance URL. Allow to use a custom domain for dedicated instance                      | https://plausible.io                                     | N        |
 | Shared Link            | The shared link allows to display stats in the "Statistics > Plausible" menu                          | https://plausible.io/share/website.prestashop?auth=xxxxx | N        |
-| Enable goals           | Enable goal events: contact, cart, checkout-step-X, order, category, product                          | Yes                                                      | Y        |
+| Enable goals           | Enable goal events: contact, cart, checkout-step-X, order, category, product, 404                     | Yes                                                      | Y        |
 | Revenue Tracking       | Enable Revenue Tracking (Plausible business plan only). Revenue is sent with the order goal.          | Yes                                                      | Y        |
 | Contact goal name      | Plausible goal name when customer send a contact message. Leave empty to ignore.                      | contact                                                  | N        |
 | Cart goal name         | Plausible goal name when customer goes to the cart. Leave empty to ignore.                            | cart                                                     | N        |
 | Checkout goal name     | Plausible goal name prefix when customer goes to a checkout step {goalName}-X. Leave empty to ignore. | checkout-step                                            | N        |
 | Order goal name        | Plausible goal name when customer submits order. Leave empty to ignore                                | order                                                    | N        |
+| 404 error goal name    | Plausible goal name when customer reaches a 404 error page. Leave empty to ignore.                    | 404                                                      | N        |
 
 Create the **shared link** in your Plausible settings for the site in *Visibility > Shared links > + New link*
 
@@ -60,6 +61,7 @@ The module includes goal events when enabled in module configuration.
 - Cart view
 - Checkout step X
 - Order complete
+- 404 error page
 
 You need to add goal events in your Plausible website configuration:
 
@@ -79,6 +81,7 @@ Default goal names are:
 - checkout-step-3
 - checkout-step-4
 - order
+- 404
 
 ### Revenue Tracking
 

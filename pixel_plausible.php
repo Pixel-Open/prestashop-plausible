@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2023 Pixel Développement
+ * Copyright (C) 2026 Pixel Développement
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -22,7 +22,7 @@ class Pixel_plausible extends Module
     public function __construct()
     {
         $this->name = 'pixel_plausible';
-        $this->version = '1.2.1';
+        $this->version = '1.2.2';
         $this->author = 'Pixel Open';
         $this->tab = 'analytics_stats';
         $this->need_instance = 0;
@@ -205,6 +205,9 @@ class Pixel_plausible extends Module
             case 'ProductController':
                 $events[] = $this->getEvent('PLAUSIBLE_GOAL_PRODUCT');
                 break;
+            case 'PageNotFoundController':
+                $events[] = $this->getEvent('PLAUSIBLE_GOAL_404');
+                break;
         }
 
         if ((int)$cookie->__get(self::PLAUSIBLE_ACCOUNT_CREATED_KEY) === 1) {
@@ -352,7 +355,7 @@ class Pixel_plausible extends Module
                     'name' => 'name',
                 ],
                 'desc' => $this->trans(
-                    'Enable goal events: contact, cart, checkout-step-X, order, product, category',
+                    'Enable goal events: contact, cart, checkout-step-X, order, product, category, 404',
                     [],
                     'Modules.Pixelplausible.Admin'
                 )
@@ -469,6 +472,19 @@ class Pixel_plausible extends Module
                 'default'  => 'product',
                 'desc' => $this->trans(
                     'Plausible goal name when customer visits a product. Leave empty to ignore.',
+                    [],
+                    'Modules.Pixelplausible.Admin'
+                )
+            ],
+            'PLAUSIBLE_GOAL_404' => [
+                'type'     => 'text',
+                'label'    => $this->trans('404 error goal name', [], 'Modules.Pixelplausible.Admin'),
+                'name'     => 'PLAUSIBLE_GOAL_404',
+                'size'     => 20,
+                'required' => false,
+                'default'  => '404',
+                'desc' => $this->trans(
+                    'Plausible goal name when customer reaches a 404 error page. Leave empty to ignore.',
                     [],
                     'Modules.Pixelplausible.Admin'
                 )

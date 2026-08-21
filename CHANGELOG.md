@@ -1,3 +1,7 @@
+## 1.2.2
+
+- New goal for 404 error page
+
 ## 1.2.1
 
 - Fix module config redirect URL for Nginx compatibility
