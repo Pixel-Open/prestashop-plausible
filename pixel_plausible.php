@@ -22,7 +22,7 @@ class Pixel_plausible extends Module
     public function __construct()
     {
         $this->name = 'pixel_plausible';
-        $this->version = '1.2.2';
+        $this->version = '1.2.3';
         $this->author = 'Pixel Open';
         $this->tab = 'analytics_stats';
         $this->need_instance = 0;
@@ -56,7 +56,8 @@ class Pixel_plausible extends Module
                 'class_name' => 'AdminPixelPlausible',
                 'visible' => true,
                 'name' => $tabNames,
-                'parent_class_name' => 'AdminStats',
+                'parent_class_name' => 'SELL',
+                'icon' => 'insights',
                 'wording' => 'Plausible',
                 'wording_domain' => 'Modules.Pixelplausible.Admin',
             ],

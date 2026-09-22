@@ -1,3 +1,8 @@
+## 1.2.3
+
+- Fix stats menu hidden for non-SuperAdmin profiles
+- Add an icon to the Plausible menu entry
+
 ## 1.2.2
 
 - New goal for 404 error page
